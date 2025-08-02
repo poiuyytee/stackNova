@@ -1,0 +1,275 @@
+.cash-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #0f172a;
+    margin: 0;
+    padding: 0;
+}
+
+.cash-content {
+    padding: 30px;
+    flex: 1;
+}
+
+.cash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.cash-header h2 {
+    color: #f1f5f9;
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.add-account-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.add-account-btn:hover {
+    background: #059669;
+}
+
+.add-account-form {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    border: 1px solid #334155;
+}
+
+.add-account-form h3 {
+    color: #f1f5f9;
+    margin: 0 0 20px 0;
+    font-size: 1.25rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-row input,
+.form-row select {
+    background: #334155;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.form-row input::placeholder {
+    color: #94a3b8;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: #10b981;
+}
+
+.form-row select option {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.save-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.cancel-btn {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.portfolio-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    text-align: center;
+}
+
+.summary-card h4 {
+    color: #94a3b8;
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.summary-card .value {
+    color: #f1f5f9;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.accounts-table {
+    background: #1e293b;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    overflow: hidden;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+    gap: 15px;
+    padding: 20px;
+    background: #334155;
+    color: #f1f5f9;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+    gap: 15px;
+    padding: 20px;
+    border-bottom: 1px solid #334155;
+    color: #f1f5f9;
+    align-items: center;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.table-row:hover {
+    background: #334155;
+}
+
+.account-name {
+    font-weight: 600;
+    color: #10b981;
+}
+
+.account-type {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.bank-name {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.balance {
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.interest-rate {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.annual-interest.positive {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.remove-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.remove-btn:hover {
+    background: #dc2626;
+}
+
+@media (max-width: 1024px) {
+    .table-header,
+    .table-row {
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        font-size: 0.8rem;
+    }
+    
+    .table-header span:nth-child(3),
+    .table-row .bank-name {
+        display: none;
+    }
+    
+    .table-header span:nth-child(6),
+    .table-row span:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .cash-content {
+        padding: 20px;
+    }
+    
+    .cash-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .portfolio-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-header,
+    .table-row {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .table-header span:nth-child(2),
+    .table-row span:nth-child(2),
+    .table-header span:nth-child(5),
+    .table-row span:nth-child(5) {
+        display: none;
+    }
+}
