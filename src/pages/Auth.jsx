@@ -9,7 +9,7 @@ function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   // const navigate = useNavigate();
-  const API_BASE_URL = ''; // Or import from a config file
+  const API_BASE_URL = 'http://localhost:5000'; // Or import from a config file
   
   const navigate = useNavigate(); // Initialize navigate
 
@@ -28,7 +28,7 @@ function Auth() {
         const data = await response.json();
         if (data.success) {
           setIsAuthenticated(true);
-          navigate('/chat'); // Redirect to chat page if authenticated
+          navigate('/dashboard'); // Redirect to chat page if authenticated
         } else {
           // Handle case where cookie exists but is invalid/user not found
           setIsAuthenticated(false);

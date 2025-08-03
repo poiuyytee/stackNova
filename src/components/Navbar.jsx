@@ -1,50 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import logo from "../assets/icon.png"
-import { useEffect, useCallback } from "react";
-
+// Make sure to import your logo if you use it locally
+// import logo from "../assets/icon.png";
 
 function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false); // For mobile menu toggle
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false); 
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  // const navigate = useNavigate();
-  const API_BASE_URL = ''; // Or import from a config file
+  const API_BASE_URL = 'http://localhost:5000'; // Or import from a config file
 
   // Function to check authentication status
   const checkAuthStatus = useCallback(async () => {
     try {
+      // Assuming your verification route is /api/auth/me
       const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Essential for sending/receiving cookies
       });
 
       if (response.ok) {
         const data = await response.json();
-        if (data.success) {
+        // Assuming the API returns a user object on success
+        if (data.user) {
           setIsAuthenticated(true);
-          if(data.user.email === "adminmasle@gmail.com") {
+          if (data.user.email === "adminmasle@gmail.com") {
             setIsAdmin(true); // Set admin status based on user role
           }
         } else {
-          // Handle case where cookie exists but is invalid/user not found
           setIsAuthenticated(false);
         }
       } else {
-        // Not authorized or other error
         setIsAuthenticated(false);
       }
     } catch (error) {
       console.error('Error verifying auth status:', error);
       setIsAuthenticated(false);
-    } 
+    }
   }, []);
 
-  // Check auth status when the app loads
+  // Check auth status when the component mounts
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
@@ -54,84 +50,79 @@ function Navbar() {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: 'POST',
-        credentials: 'include', // Essential for sending cookies
+        credentials: 'include',
       });
       if (response.ok) {
         setIsAuthenticated(false);
+        setIsAdmin(false); // Reset admin status on logout
+        // Optionally redirect to home or login page
+        // window.location.href = '/'; 
       } else {
         console.error('Logout failed:', await response.text());
-        // Optionally handle logout failure on the UI
       }
     } catch (error) {
       console.error('Error logging out:', error);
     }
   };
+
   return (
     <nav className="bg-gradient-to-r from-purple-700 to-purple-800 shadow-md z-20">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Left Navigation Links (Desktop) */}
-        <div className="hidden md:flex space-x-6">
-          <a
-            href="/"
-            className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300"
-          >
+        <div className="hidden md:flex items-center space-x-6">
+          <a href="/" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">
             About
           </a>
-          <a
-            href="#features"
-            className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300"
-          >
+          <a href="#features" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">
             Features
           </a>
-          <a
-            href="#contact"
-            className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300"
-          >
+          <a href="#contact" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">
             Contact Us
           </a>
-          {isAdmin && (
-            <a
-              href="/admin"
-              className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300"
-            >
-              Admin Panel
-            </a>
+          
+          {/* --- AUTHENTICATED-ONLY ROUTES FOR DESKTOP --- */}
+          {isAuthenticated && (
+            <>
+              <a href="/cash" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">Cash</a>
+              <a href="/gold" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">Gold</a>
+              <a href="/bonds" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">Bonds</a>
+              <a href="/stocks" className="text-white hover:text-gray-200 font-medium tracking-wide transition duration-300">Stocks</a>
+            </>
           )}
         </div>
 
         {/* Logo */}
-        <div className="flex items-center ">
-          <img
-            // src={logo} // Replace with your logo URL
-            // alt="Logo"
-            className=" h-12"
-          />
+        <div className="flex items-center">
+          {/* <img src={logo} alt="Logo" className="h-12" /> */}
           <span className="text-2xl font-bold text-white">StackNova</span>
         </div>
 
-        {/* Right Side: Dynamic Button (Login/Logout) */}
+        {/* Right Side: Dynamic Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <a href="/auth">
+          {/* --- DASHBOARD BUTTON (ALWAYS VISIBLE) --- */}
+          <a href="/dashboard">
+            <button className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-110 active:scale-95">
+              Dashboard
+            </button>
+          </a>
+          
+          {/* --- LOGIN/LOGOUT BUTTON --- */}
           <button
             onClick={() => {
               if (isAuthenticated) {
                 handleLogout();
+              } else {
+                window.location.href = '/auth'; // Redirect to login page
               }
             }}
             className={`${
-              isAuthenticated 
+              isAuthenticated
                 ? "bg-white text-purple-700"
-                : "bg-gradient-to-r from-purple-600 to-purple-500"
+                : "bg-gradient-to-r from-purple-600 to-purple-500 text-white"
             } hover:shadow-lg focus:ring-2 focus:ring-purple-400 font-medium px-5 py-2 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95`}
           >
             {isAuthenticated ? "Logout" : "Login/Signup"}
           </button>
-          </a>
-          <a href="/chat">
-          <button className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-110 active:scale-95">
-            Try stacknova for Free
-          </button>
-          </a>
         </div>
 
         {/* Mobile Menu Button */}
@@ -146,55 +137,40 @@ function Navbar() {
       {/* Mobile Dropdown Menu */}
       {isNavOpen && (
         <div className="md:hidden px-4 pb-4 bg-gradient-to-r from-purple-700 to-purple-800 shadow-lg">
-          <a
-            href="/"
-            className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300"
-            onClick={() => setIsNavOpen(false)}
-          >
-            About
-          </a>
-          <a
-            href="#features"
-            className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300"
-            onClick={() => setIsNavOpen(false)}
-          >
-            Features
-          </a>
-          <a
-            href="#contact"
-            className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300"
-            onClick={() => setIsNavOpen(false)}
-          >
-            Contact Us
-          </a>
-          {isAdmin && (
-            <a
-              href="/admin"
-              className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300"
-              onClick={() => setIsNavOpen(false)}
-            >
-              Admin Panel
-            </a>
+          <a href="/" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>About</a>
+          <a href="#features" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Features</a>
+          <a href="#contact" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Contact Us</a>
+          
+          {/* --- DASHBOARD LINK (ALWAYS VISIBLE) --- */}
+          <a href="/dashboard" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Dashboard</a>
+
+          {/* --- AUTHENTICATED-ONLY ROUTES FOR MOBILE --- */}
+          {isAuthenticated && (
+            <>
+              <a href="/cash" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Cash</a>
+              <a href="/gold" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Gold</a>
+              <a href="/bonds" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Bonds</a>
+              <a href="/stocks" className="block py-2 text-white hover:text-gray-200 font-medium transition duration-300" onClick={() => setIsNavOpen(false)}>Stocks</a>
+            </>
           )}
-          <a href="/auth">
+
           <button
             onClick={() => {
+              if (isAuthenticated) {
+                handleLogout();
+              } else {
+                window.location.href = '/auth';
+              }
               setIsNavOpen(false);
             }}
-            className={`block w-full text-left py-2 ${
+            className={`mt-4 w-full text-center py-2 ${
               isAuthenticated
                 ? "bg-white text-purple-700"
-                : "bg-gradient-to-r from-purple-600 to-purple-500"
+                : "bg-gradient-to-r from-purple-600 to-purple-500 text-white"
             } hover:shadow-lg focus:ring-2 focus:ring-purple-400 font-medium px-5 rounded-full shadow-md transition-transform transform hover:scale-105 active:scale-95`}
           >
             {isAuthenticated ? "Logout" : "Login/Signup"}
           </button>
-          </a>
-          <a href="/chat">
-          <button className="mt-4 w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition-transform transform hover:scale-110 active:scale-95">
-            Try stacknova for Free
-          </button>
-          </a>
         </div>
       )}
     </nav>
